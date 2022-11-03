@@ -23,6 +23,7 @@ public class MyPanels extends JPanel
     @Override
     protected void paintComponent(Graphics g)
     {
-        g.drawImage(originalImage, ALLBITS, ABORT, getFocusCycleRootAncestor());
+        super.paintComponent(g);
+        g.drawImage(originalImage, 0,0, null);
     }
 }

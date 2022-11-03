@@ -1,5 +1,5 @@
 import java.awt.*;
-
+import java.awt.Graphics;
 import javax.imageio.*;  //for imageIO
 import javax.swing.*; 
 import java.awt.event.*;
@@ -16,9 +16,12 @@ JButton exit;
 JButton newImage;
 JButton playAndPause;
 
-JPanel displayPuzzle[][];
-JPanel displayOriginalImage;
-JPanel southPanel;
+
+MyPanels panelForOrigImg;         // the main picture to cover up when pause is clicked
+JPanel southPanel;              //for buttons on bottom
+JPanel panelForGrid;            //for the smart buttons
+
+ImageIcon imageIcon;            //used to create the SmartButtons
 
 JLabel labelForTotalMoves;
 JLabel labelForElapsedTime;
@@ -30,17 +33,15 @@ double elapsedTime;
 
 JFileChooser theFileChooser;
 BufferedImage bufferedImg;
-ImageIcon imageIcon;
-ImageIcon originalImage;
 
 JLabel labelForPauseImage;
 
-JPanel panelForGrid;
+SmartButton button;
 
-Buttons buttons;
+Board board;
 
 
-public static final int ROW = 10;
+public static final int ROW = 5;
 
 
 //==============================================CONSTRUCTOR================================================================================    
@@ -61,8 +62,6 @@ public static final int ROW = 10;
         southPanel.setPreferredSize(new Dimension(100,30));
         add(southPanel, BorderLayout.SOUTH);
 
-        displayOriginalImage = new JPanel();
-
         exit = new JButton("Exit");
         exit.addActionListener(this);
 
@@ -81,30 +80,10 @@ public static final int ROW = 10;
 
 
 
-        panelForGrid = new JPanel();
-        displayPuzzle = new JPanel[ROW][ROW];
+
+        panelForGrid = new MyPanels();
+        
         panelForGrid.setLayout(new GridLayout(ROW,ROW));
-
-        for(int i = 0;i < ROW; i++)
-        {
-            for(int j = 0; j < ROW;j++)
-            {
-                displayPuzzle[i][j] = new JPanel();
-                panelForGrid.add(displayPuzzle[i][j]);
-            }
-        }
-
-
-        int numnum = 0;
-        for(int i = 0;i < ROW; i++)
-        {
-            for(int j = 0; j < ROW;j++)
-            {
-                displayPuzzle[i][j].add(new JLabel(Integer.toString(numnum)));
-                numnum++;
-            }
-        }
-
 
         add(panelForGrid,BorderLayout.CENTER);
 
@@ -153,13 +132,11 @@ public static final int ROW = 10;
                 }
                 else if(width < height)
                 {
-                    heightOfRegion = (height-width)/2;
-                    bufferedImg = bufferedImg.getSubimage((height-width)/2, 0, heightOfRegion, heightOfRegion);
+            
+                    bufferedImg = bufferedImg.getSubimage(0, (height-width)/2, width,width );
                 }
 
 
-                imageIcon = new ImageIcon(bufferedImg);         //going to shuffle around
-                buttons = new Buttons(imageIcon);
 
             }
             catch(Exception e)
@@ -171,7 +148,6 @@ public static final int ROW = 10;
         {
             System.out.println("Do nothing.");
         }
-        
 
     }
 
@@ -186,19 +162,20 @@ public static final int ROW = 10;
         else if(e.getActionCommand().equals("New_Image"))
         {
             handleNewImage();
+            panelForOrigImg = new MyPanels(bufferedImg);
+            board = new Board(bufferedImg,panelForGrid);
         }
         else if(e.getActionCommand().equals("Play"))
         {
+
+            panelForGrid.setVisible(true);
+            panelForOrigImg.setVisible(false);
             playAndPause.setText(("Pause"));
         }
         else if(e.getActionCommand().equals("Pause"))
         {
-//            labelForPauseImage = new JLabel();
-//            labelForPauseImage.setIcon(originalImage);
-//            displayOriginalImage.add(labelForPauseImage);
-//            add(displayOriginalImage,BorderLayout.CENTER);
-            displayOriginalImage = new MyPanels(bufferedImg);
-            add(displayOriginalImage,BorderLayout.CENTER);
+            add(panelForOrigImg,BorderLayout.CENTER);
+            panelForOrigImg.setVisible(true);
             panelForGrid.setVisible(false);
             playAndPause.setText("Play");
         }
