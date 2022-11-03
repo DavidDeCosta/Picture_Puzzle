@@ -199,7 +199,7 @@ public static final int ROW = 10;
 //            add(displayOriginalImage,BorderLayout.CENTER);
             displayOriginalImage = new MyPanels(bufferedImg);
             add(displayOriginalImage,BorderLayout.CENTER);
-
+            panelForGrid.setVisible(false);
             playAndPause.setText("Play");
         }
     }
