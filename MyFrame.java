@@ -1,7 +1,9 @@
 import java.awt.*;
+
+import javax.imageio.*;  //for imageIO
 import javax.swing.*; 
 import java.awt.event.*;
-import java.io.*;
+import java.awt.image.BufferedImage;
 
 public class MyFrame extends JFrame
                         implements ActionListener
@@ -14,7 +16,7 @@ JButton exit;
 JButton newImage;
 JButton playAndPause;
 
-JPanel displayPuzzle;
+JPanel displayPuzzle[][];
 JPanel displayOriginalImage;
 JPanel southPanel;
 
@@ -27,6 +29,16 @@ int incorrectPieces;
 double elapsedTime;
 
 JFileChooser theFileChooser;
+BufferedImage bufferedImg;
+ImageIcon imageIcon;
+ImageIcon originalImage;
+
+JLabel labelForPauseImage;
+
+JPanel panelForGrid;
+
+Buttons buttons;
+
 
 public static final int ROW = 10;
 
@@ -35,6 +47,7 @@ public static final int ROW = 10;
     MyFrame()
     {
         theFileChooser = new JFileChooser(".");
+
 
         addComponents();
         buildMainFrame();
@@ -47,6 +60,8 @@ public static final int ROW = 10;
         southPanel.setBackground(Color.GRAY);
         southPanel.setPreferredSize(new Dimension(100,30));
         add(southPanel, BorderLayout.SOUTH);
+
+        displayOriginalImage = new JPanel();
 
         exit = new JButton("Exit");
         exit.addActionListener(this);
@@ -62,6 +77,36 @@ public static final int ROW = 10;
         labelForElapsedTime = new JLabel("Elapsed Time: " + elapsedTime);
 
         labelForIncorrectPieces = new JLabel("Incorrect Pieces: " + incorrectPieces);
+
+
+
+
+        panelForGrid = new JPanel();
+        displayPuzzle = new JPanel[ROW][ROW];
+        panelForGrid.setLayout(new GridLayout(ROW,ROW));
+
+        for(int i = 0;i < ROW; i++)
+        {
+            for(int j = 0; j < ROW;j++)
+            {
+                displayPuzzle[i][j] = new JPanel();
+                panelForGrid.add(displayPuzzle[i][j]);
+            }
+        }
+
+
+        int numnum = 0;
+        for(int i = 0;i < ROW; i++)
+        {
+            for(int j = 0; j < ROW;j++)
+            {
+                displayPuzzle[i][j].add(new JLabel(Integer.toString(numnum)));
+                numnum++;
+            }
+        }
+
+
+        add(panelForGrid,BorderLayout.CENTER);
 
         southPanel.add(labelForElapsedTime);
         southPanel.add(labelForIncorrectPieces);
@@ -85,7 +130,47 @@ public static final int ROW = 10;
 
     void handleNewImage()
     {
-        theFileChooser.showOpenDialog(this);
+        int fileChooser;
+        
+        fileChooser = theFileChooser.showOpenDialog(this);
+        if(fileChooser == JFileChooser.APPROVE_OPTION)
+        {
+            try
+            {
+                bufferedImg = ImageIO.read(theFileChooser.getSelectedFile());
+
+                int width;
+                int height;
+                int heightOfRegion;
+                
+                width = bufferedImg.getWidth();
+                height = bufferedImg.getHeight();
+                if(width > height)
+                {
+                    heightOfRegion = (width-height)/2;
+                    bufferedImg = bufferedImg.getSubimage((width-height)/2, 0, heightOfRegion, heightOfRegion);
+                     
+                }
+                else if(width < height)
+                {
+                    heightOfRegion = (height-width)/2;
+                    bufferedImg = bufferedImg.getSubimage((height-width)/2, 0, heightOfRegion, heightOfRegion);
+                }
+
+
+                imageIcon = new ImageIcon(bufferedImg);         //going to shuffle around
+                buttons = new Buttons(imageIcon);
+
+            }
+            catch(Exception e)
+            {
+                JOptionPane.showMessageDialog(this, "Error, could not load");
+            }
+        }
+        else
+        {
+            System.out.println("Do nothing.");
+        }
         
 
     }
@@ -108,6 +193,13 @@ public static final int ROW = 10;
         }
         else if(e.getActionCommand().equals("Pause"))
         {
+//            labelForPauseImage = new JLabel();
+//            labelForPauseImage.setIcon(originalImage);
+//            displayOriginalImage.add(labelForPauseImage);
+//            add(displayOriginalImage,BorderLayout.CENTER);
+            displayOriginalImage = new MyPanels(bufferedImg);
+            add(displayOriginalImage,BorderLayout.CENTER);
+
             playAndPause.setText("Play");
         }
     }
