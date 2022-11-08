@@ -38,7 +38,15 @@ public class SmartButton extends JButton
         setIcon(new ImageIcon(img));
     }
 
-
+    void swapImage(Image img1, Image img2)
+    {
+        Image tempImg;
+        tempImg = img1;
+        img1=img2;
+        img2= img1;
+        setIcon(new ImageIcon(img1));
+        setIcon(new ImageIcon(img2));
+    }
 
 
 }

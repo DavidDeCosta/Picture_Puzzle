@@ -164,6 +164,9 @@ public static final int ROW = 5;
             handleNewImage();
             panelForOrigImg = new MyPanels(bufferedImg);
             board = new Board(bufferedImg,panelForGrid);
+            add(panelForOrigImg,BorderLayout.CENTER);
+            panelForOrigImg.setVisible(true);
+            panelForGrid.setVisible(false);
         }
         else if(e.getActionCommand().equals("Play"))
         {
