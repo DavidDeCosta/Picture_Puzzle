@@ -14,10 +14,17 @@ public class Board
     SmartButton buttonArray[][];
     JPanel panelForBoard;
     BufferedImage bufferedImg;
-    Image img;
+    BufferedImage img;
     SmartButton smartButton;
 
+    SmartButton hole;
 
+    
+    int holeColumn = MyFrame.ROW-1;
+    int holeRow = MyFrame.ROW-1;
+
+    int x;
+    int y;
 
     Board()
     {
@@ -28,24 +35,9 @@ public class Board
         this.panelForBoard = panelForBoard;
         this.bufferedImg = bufferedImg;
         populateBoard();
-        shuffle();
-        shuffle();
-        shuffle();
-        shuffle();
-        shuffle();
-        shuffle();
-        shuffle();
-        shuffle();
-        shuffle();
-        shuffle();
-        shuffle();
-        shuffle();
-        shuffle();
-        shuffle();
-        shuffle();
-        shuffle();
-        shuffle();
-        shuffle();
+    //    hole = new SmartButton();
+ //       hole = buttonArray[MyFrame.ROW-1][MyFrame.ROW-1]; //where the hole is
+
     }
 
 
@@ -69,40 +61,53 @@ public class Board
             }
         }
         buttonArray[MyFrame.ROW-1][MyFrame.ROW-1].setIcon(null);
+        buttonArray[0][0].swapImage(buttonArray[2][2]);
     }
 
     void shuffle()
     {
         int z;
-        int holeColumn = MyFrame.ROW-1;
-        int holeRow = MyFrame.ROW-1;
+
         Random rand;
         rand = new Random();
         z = rand.nextInt(4);
 
         if(z == 0 && holeColumn !=0)
         {
+            x = holeRow;
+            y = holeColumn -1;
             buttonArray[holeRow][holeColumn-1].doClick();
             System.out.println("clicked here 1st!");
             holeColumn = holeColumn -1;
+//            hole = buttonArray[holeRow][holeColumn-1];  //update where the hole button is
+
         }
         else if(z == 1 && holeRow !=0)
         {
+            x = holeRow -1;
+            y = holeColumn;
             buttonArray[holeRow-1][holeColumn].doClick();
-            System.out.println("clicked here 2nst!");
+            System.out.println("clicked here 2nd!");
             holeRow = holeRow -1;
+//            hole = buttonArray[holeRow-1][holeColumn];
         }
         else if(z == 2 && holeColumn != MyFrame.ROW -1)
         {
+            x = holeRow;
+            y = holeColumn +1;
             buttonArray[holeRow][holeColumn+1].doClick();
-            System.out.println("clicked here 3trdst!");
+            System.out.println("clicked here 3rd!");
             holeColumn = holeColumn +1;
+//            hole = buttonArray[holeRow][holeColumn+1];
         }
         else if(z == 3 && holeRow != MyFrame.ROW-1)
         {
+            x = holeRow +1;
+            y = holeColumn;
             buttonArray[holeRow+1][holeColumn].doClick();
-            System.out.println("clicked here 4thst!");
+            System.out.println("clicked here 4th!");
             holeRow = holeRow + 1;
+ //           hole = buttonArray[holeRow+1][holeColumn];
         }
         else
         {
@@ -115,9 +120,12 @@ public class Board
     @Override
     public void actionPerformed(ActionEvent e) 
     {
-        smartButton = new SmartButton();
-        smartButton.swapImage(img, img);
-        System.out.println("im hereeerereeee! \n");
+        SmartButton smart;
+        smart = (SmartButton)e.getSource();
+    buttonArray[holeRow][holeColumn].swapImage(buttonArray[smart.row][smart.col]);
+//        hole = buttonArray[x][y];
+        System.out.println(x + "   " + y);
+        System.out.println("im in action performed! \n");
 
     }
 }

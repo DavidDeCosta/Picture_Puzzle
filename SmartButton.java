@@ -10,7 +10,7 @@ public class SmartButton extends JButton
 //===========================================DATA MEMBERS===============================================================
     Icon icon;
     //Board board;
-    Image img;
+    BufferedImage img;
     int row;
     int col;
 
@@ -30,7 +30,7 @@ public class SmartButton extends JButton
 
     }
 
-    SmartButton(Image img, int row, int col)
+    SmartButton(BufferedImage img, int row, int col)
     {
         this.img = img;
         this.row = row;
@@ -38,14 +38,13 @@ public class SmartButton extends JButton
         setIcon(new ImageIcon(img));
     }
 
-    void swapImage(Image img1, Image img2)
+    void swapImage(SmartButton button)
     {
-        Image tempImg;
-        tempImg = img1;
-        img1=img2;
-        img2= img1;
-        setIcon(new ImageIcon(img1));
-        setIcon(new ImageIcon(img2));
+        BufferedImage temp;
+
+        temp = button.img;
+        button.img = this.img;
+        this.img = temp;
     }
 
 
