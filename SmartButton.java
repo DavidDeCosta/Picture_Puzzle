@@ -43,8 +43,8 @@ public class SmartButton extends JButton
         BufferedImage temp;
 
         temp = button.img;
-        button.img = this.img;
-        this.img = temp;
+        button.img = this.img;  //makes the button that was clicked the blank image
+        this.img = temp;        //make the blank spot the image of the button that was passed in
     }
 
 

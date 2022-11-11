@@ -1,9 +1,11 @@
 import java.awt.*;
-import java.awt.Graphics;
 import javax.imageio.*;  //for imageIO
 import javax.swing.*; 
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+//import javax.swing.Timer;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MyFrame extends JFrame
                         implements ActionListener
@@ -29,7 +31,7 @@ JLabel labelForIncorrectPieces;
 
 int numberOfMoves = 0;
 int incorrectPieces;
-double elapsedTime;
+int elapsedTime =0;
 
 JFileChooser theFileChooser;
 BufferedImage bufferedImg;
@@ -40,6 +42,12 @@ SmartButton button;
 
 Board board;
 
+Timer timer;
+TimerTask task;
+int timePassed =0;
+
+boolean isPaused = false;
+
 
 public static final int ROW = 5;
 
@@ -48,8 +56,7 @@ public static final int ROW = 5;
     MyFrame()
     {
         theFileChooser = new JFileChooser(".");
-
-
+        
         addComponents();
         buildMainFrame();
     }
@@ -151,6 +158,38 @@ public static final int ROW = 5;
 
     }
 
+    void handleTime()
+    {
+        timer = new Timer(false);
+        elapsedTime = timePassed;
+        task = new TimerTask() 
+        {
+            public void run()
+            {
+                isPaused =false;
+                elapsedTime++;
+                labelForElapsedTime.setText("Elapsed Time: " + elapsedTime);
+            }
+        };
+
+    }
+    public void start()
+    {
+        timer.scheduleAtFixedRate(task, 1000, 1000);
+    }
+    public void pause()
+    {
+        isPaused = true;
+        timePassed = elapsedTime;
+        timer.cancel();
+
+    }
+    public void resume() 
+    {
+        timer = new Timer();
+        timer.scheduleAtFixedRate( task, 1000, 1000 );
+    }
+
 //=============================================IMPLEMENTED METHODS==================================================================================
     @Override
     public void actionPerformed(ActionEvent e) 
@@ -170,17 +209,24 @@ public static final int ROW = 5;
         }
         else if(e.getActionCommand().equals("Play"))
         {
-
             panelForGrid.setVisible(true);
             panelForOrigImg.setVisible(false);
             playAndPause.setText(("Pause"));
+            
+            handleTime();
+            start();
+
         }
         else if(e.getActionCommand().equals("Pause"))
         {
+
+
             add(panelForOrigImg,BorderLayout.CENTER);
             panelForOrigImg.setVisible(true);
             panelForGrid.setVisible(false);
             playAndPause.setText("Play");
+
+            pause();
         }
     }
 

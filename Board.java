@@ -1,11 +1,9 @@
 import java.awt.image.BufferedImage;
 import java.util.Random;
 import java.awt.event.*;
-import javax.lang.model.util.ElementScanner14;
+
 import javax.swing.Icon;
 import javax.swing.JPanel;
-import java.awt.GridLayout;
-import java.awt.*;
 
 public class Board
                     implements ActionListener
@@ -38,6 +36,11 @@ public class Board
     //    hole = new SmartButton();
  //       hole = buttonArray[MyFrame.ROW-1][MyFrame.ROW-1]; //where the hole is
 
+        for(int i = 0; i <4 ; i++)
+        {
+            shuffle();
+        }
+
     }
 
 
@@ -60,8 +63,8 @@ public class Board
                 panelForBoard.add(buttonArray[row][col]);
             }
         }
-        buttonArray[MyFrame.ROW-1][MyFrame.ROW-1].setIcon(null);
-        buttonArray[0][0].swapImage(buttonArray[2][2]);
+        buttonArray[MyFrame.ROW-1][MyFrame.ROW-1].setIcon(null);                 //makes the bottom right corner the blank image
+   //     buttonArray[0][0].swapImage(buttonArray[2][2]);
     }
 
     void shuffle()
@@ -122,10 +125,14 @@ public class Board
     {
         SmartButton smart;
         smart = (SmartButton)e.getSource();
-    buttonArray[holeRow][holeColumn].swapImage(buttonArray[smart.row][smart.col]);
+//    buttonArray[holeRow][holeColumn].swapImage(buttonArray[smart.row][smart.col]);    //swaps the image of the blank space with the image that was clicked
+
+        Icon temp;
+        temp = buttonArray[smart.row][smart.col].icon;
+    buttonArray[smart.row][smart.col].setIcon(buttonArray[holeRow][holeColumn].icon);
+    buttonArray[holeRow][holeColumn].setIcon(temp);
 //        hole = buttonArray[x][y];
-        System.out.println(x + "   " + y);
-        System.out.println("im in action performed! \n");
+        System.out.println("x value: " + x + " |  y value: " + y);
 
     }
 }
