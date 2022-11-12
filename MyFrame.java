@@ -1,5 +1,6 @@
 import java.awt.*;
 import javax.imageio.*;  //for imageIO
+import javax.lang.model.util.ElementScanner14;
 import javax.swing.*; 
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -92,7 +93,10 @@ public static final int ROW = 5;
         
         panelForGrid.setLayout(new GridLayout(ROW,ROW));
 
+
         add(panelForGrid,BorderLayout.CENTER);
+
+
 
         southPanel.add(labelForElapsedTime);
         southPanel.add(labelForIncorrectPieces);
@@ -101,6 +105,7 @@ public static final int ROW = 5;
         southPanel.add(newImage);
         southPanel.add(exit);
 
+        
     }
 
     void buildMainFrame()
@@ -196,13 +201,14 @@ public static final int ROW = 5;
     {
         if(e.getActionCommand().equals("Exit"))
         {
-            this.dispose();
+        //    this.dispose();
+            System.exit(0);
         }
         else if(e.getActionCommand().equals("New_Image"))
         {
             handleNewImage();
             panelForOrigImg = new MyPanels(bufferedImg);
-            board = new Board(bufferedImg,panelForGrid);
+            board = new Board(bufferedImg,panelForGrid,labelForTotalMoves);
             add(panelForOrigImg,BorderLayout.CENTER);
             panelForOrigImg.setVisible(true);
             panelForGrid.setVisible(false);
@@ -220,7 +226,6 @@ public static final int ROW = 5;
         else if(e.getActionCommand().equals("Pause"))
         {
 
-
             add(panelForOrigImg,BorderLayout.CENTER);
             panelForOrigImg.setVisible(true);
             panelForGrid.setVisible(false);
@@ -228,6 +233,7 @@ public static final int ROW = 5;
 
             pause();
         }
+
     }
 
 }
