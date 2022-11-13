@@ -5,12 +5,11 @@ import java.awt.event.*;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.xml.transform.Source;
 
 public class Board
                     implements ActionListener
 {
-
-    SmartButton originalConfiguration[][];
 
     SmartButton buttonArray[][];
     JPanel panelForBoard;
@@ -20,18 +19,20 @@ public class Board
 
     SmartButton hole;
 
-    
     int holeColumn = MyFrame.ROW-1;
     int holeRow = MyFrame.ROW-1;
 
     int x;
     int y;
 
-    boolean youWin = false;
+    boolean youWin;
 
     int numberToDisplayMoves = -1;
 
     JLabel labelForTotalMoves;
+
+    Icon temp;
+    SmartButton smart;
 
     Board()
     {
@@ -44,7 +45,7 @@ public class Board
         this.labelForTotalMoves = labelForTotalMoves;
         populateBoard();
 
-        for(int i = 0; i < 5 ; i++)
+        for(int i = 0; i < 2 ; i++)
         {
             shuffle();
         }
@@ -55,7 +56,6 @@ public class Board
     void populateBoard()
     {
         buttonArray = new SmartButton[MyFrame.ROW][MyFrame.ROW];
-        originalConfiguration = new SmartButton[MyFrame.ROW][MyFrame.ROW];
         int b;
         b = bufferedImg.getWidth() / MyFrame.ROW;
 
@@ -66,13 +66,11 @@ public class Board
                 
                 img = bufferedImg.getSubimage(col*(b), row*(b), b, b);
                 buttonArray[row][col] = new SmartButton(img,row,col);
-                originalConfiguration[row][col] = buttonArray[row][col];   //original cofig has the same smartbutton as buttonarray
                 buttonArray[row][col].addActionListener(this);
                 panelForBoard.add(buttonArray[row][col]);
             }
         }
         buttonArray[MyFrame.ROW-1][MyFrame.ROW-1].setIcon(null);                 //makes the bottom right corner the blank image
-        originalConfiguration[MyFrame.ROW-1][MyFrame.ROW-1].setIcon(null);
 
     }
 
@@ -116,68 +114,76 @@ public class Board
         numberToDisplayMoves = -1;                //so the shuffling isnt counted as moves for the player
     }
 
-    void checkForWin()
+    boolean checkForWin()
     {
+
         for(int i = 0; i < MyFrame.ROW;i++)
         {
             for(int j = 0; j < MyFrame.ROW;j++)
             {
-                if(originalConfiguration[i][j].img.equals(buttonArray[i][j].img))
-                {
-                    youWin =true;
-                }
-                else
-                {
-                    youWin = false;
-                }
-               
+  //              System.out.println(" Row for image: " + buttonArray[i][j].rowForImage + " Col for image: " +buttonArray[i][j].colForImage +
+  //                              "  Row for Button: " +buttonArray[i][j].rowforButton + "  Col for button: " + buttonArray[i][j].colForButton + " " );
+               if(!((buttonArray[i][j].rowForImage == buttonArray[i][j].rowforButton) && (buttonArray[i][j].colForImage == buttonArray[i][j].colForButton)))
+               {
+                    return false;
+               }
             }
         }
-
-        if(youWin == true)
-        {
-            System.out.println("YOU WIN! ");
-        }
+        
+        return true;
     }
 
+    void swapImage()
+    {
+        temp = buttonArray[smart.rowforButton][smart.colForButton].getIcon();
+        buttonArray[smart.rowforButton][smart.colForButton].setIcon(buttonArray[holeRow][holeColumn].icon);
+        buttonArray[holeRow][holeColumn].setIcon(temp);
+
+        //=======================STUDY THIS
+        int tmp;
+        tmp = smart.rowForImage;
+        smart.rowForImage = buttonArray[holeRow][holeColumn].rowForImage; 
+        buttonArray[holeRow][holeColumn].rowForImage = tmp;
+
+        tmp = smart.colForImage;
+        smart.colForImage = buttonArray[holeRow][holeColumn].colForImage; 
+        buttonArray[holeRow][holeColumn].colForImage = tmp;
+//========================STUDY THIS
+
+
+        holeRow = smart.rowforButton;                                 //Hole row is where the button that was clicked on
+        holeColumn = smart.colForButton;                              //Hole column is where the button that was clicked on
+
+
+
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) 
     {
-        SmartButton smart;
+
         smart = (SmartButton)e.getSource();
+        System.out.println("Smart row: " + smart.rowforButton + " Smart Col: " + smart.colForButton +" Hole Row: " + holeRow +  "  hole Col: " + holeColumn +"   ");
 
-
-
-        Icon temp;
-        temp = buttonArray[smart.row][smart.col].getIcon();                               //these 3 lines are reponsible for swapping the images.
-
-        if((smart.row == holeRow && smart.col == (holeColumn -1)) || (smart.col == holeColumn && smart.row == (holeRow -1)) || smart.row == holeRow && smart.col == (holeColumn + 1) 
-            || smart.col == holeColumn && smart.row == (holeRow +1))
+        //=====================================if the button clicked is adjacent to the whole swap the images =======================================================================
+        if((smart.rowforButton == holeRow && smart.colForButton == (holeColumn -1)) || (smart.colForButton == holeColumn && smart.rowforButton == (holeRow -1)) || smart.rowforButton == holeRow && smart.colForButton == (holeColumn + 1) 
+            || smart.colForButton == holeColumn && smart.rowforButton == (holeRow +1))
         {
-            checkForWin();
-        buttonArray[smart.row][smart.col].setIcon(buttonArray[holeRow][holeColumn].icon);
-        buttonArray[holeRow][holeColumn].setIcon(temp);
-        
-        System.out.println("Smart row: " + smart.row + " Hole Row: " + holeRow + " Smart Col: " + smart.col + "  hole Col: " + holeColumn +"   ");
-
-
-        holeRow = smart.row;                                                                //updates where the hole is
-        holeColumn = smart.col;                                                             //updates where the hole is
-
-
+            swapImage();
+            youWin = checkForWin();
+            if(youWin == true)
+            {
+                System.out.println("You win! \n");
+            }
+            numberToDisplayMoves++;
         }
         else
         {
             System.out.println("Do not perform swap!!!! \n");
         }
 
-        numberToDisplayMoves++;
-        labelForTotalMoves.setText("Number of moves: " + numberToDisplayMoves);  //everytime the user clicks an image it increments the moves by 1.
 
-        x = smart.col;
-        y=smart.row;
-     //   System.out.println("x value: " + x + " |  y value: " + y);
+        labelForTotalMoves.setText("Number of moves: " + numberToDisplayMoves);  //everytime the user clicks an image it increments the moves by 1.
 
     }
 }

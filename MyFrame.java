@@ -1,6 +1,5 @@
 import java.awt.*;
 import javax.imageio.*;  //for imageIO
-import javax.lang.model.util.ElementScanner14;
 import javax.swing.*; 
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -38,8 +37,6 @@ JFileChooser theFileChooser;
 BufferedImage bufferedImg;
 
 JLabel labelForPauseImage;
-
-SmartButton button;
 
 Board board;
 
