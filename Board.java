@@ -6,7 +6,6 @@ import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.xml.transform.Source;
 
 public class Board
                     implements ActionListener
@@ -39,6 +38,9 @@ public class Board
 
     Icon temp;
     SmartButton smart;
+
+    Time stopWatch;
+
 
     Board()
     {
@@ -209,14 +211,21 @@ public class Board
                 if(JOptionPane.NO_OPTION == response)
                 {
                 System.out.println("Do nothing");
+                
                 }
                 else
                 {
                     for(int i = 0; i < 3; i++)
                     {
+
                         shuffle();
+
+ //                       labelForElapsedTime.setText("Elapsed Time: " + elapsedTime);
+
                         elapsedTime = 0;
-                        labelForElapsedTime.setText("Elapsed Time: " + elapsedTime);
+                        stopWatch = new Time(elapsedTime,labelForElapsedTime);
+                        stopWatch.handleTime();
+                        stopWatch.start();
                     }
                 }
             }

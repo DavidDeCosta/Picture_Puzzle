@@ -1,9 +1,9 @@
 import java.awt.*;
 import javax.imageio.*;  //for imageIO
+import javax.lang.model.util.ElementScanner14;
 import javax.swing.*; 
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-//import javax.swing.Timer;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -40,11 +40,9 @@ JLabel labelForPauseImage;
 
 Board board;
 
-Timer timer;
-TimerTask task;
-int timePassed =0;
-
 boolean isPaused = false;
+
+Time stopWatch;
 
 
 public static final int ROW = 5;
@@ -78,7 +76,7 @@ public static final int ROW = 5;
 
         labelForTotalMoves = new JLabel("Number of moves: " + numberOfMoves);
 
-        labelForElapsedTime = new JLabel("Elapsed Time: " + elapsedTime);
+        labelForElapsedTime = new JLabel("Elapsed Time: " );
 
         labelForIncorrectPieces = new JLabel("Incorrect Pieces: " + incorrectPieces);
 
@@ -160,38 +158,6 @@ public static final int ROW = 5;
 
     }
 
-    void handleTime()
-    {
-        timer = new Timer(false);
-        elapsedTime = timePassed;
-        task = new TimerTask() 
-        {
-            public void run()
-            {
-                isPaused =false;
-                elapsedTime++;
-                labelForElapsedTime.setText("Elapsed Time: " + elapsedTime);
-            }
-        };
-
-    }
-    public void start()
-    {
-        timer.scheduleAtFixedRate(task, 1000, 1000);
-    }
-    public void pause()
-    {
-        isPaused = true;
-        timePassed = elapsedTime;
-        timer.cancel();
-
-    }
-    public void resume() 
-    {
-        timer = new Timer();
-        timer.scheduleAtFixedRate( task, 1000, 1000 );
-    }
-
 //=============================================IMPLEMENTED METHODS==================================================================================
     @Override
     public void actionPerformed(ActionEvent e) 
@@ -216,8 +182,9 @@ public static final int ROW = 5;
             panelForOrigImg.setVisible(false);
             playAndPause.setText(("Pause"));
             
-            handleTime();
-            start();
+            stopWatch = new Time(elapsedTime,labelForElapsedTime);
+            stopWatch.handleTime();
+            stopWatch.start();
 
         }
         else if(e.getActionCommand().equals("Pause"))
@@ -228,7 +195,8 @@ public static final int ROW = 5;
             panelForGrid.setVisible(false);
             playAndPause.setText("Play");
 
-            pause();
+
+            stopWatch.pause();
         }
 
     }
