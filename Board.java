@@ -6,6 +6,7 @@ import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import java.awt.Image;
 
 public class Board
                     implements ActionListener
@@ -41,26 +42,29 @@ public class Board
 
     Time stopWatch;
 
+    boolean someOtherCheck = false;
+
 
     Board()
     {
         
     }
-    Board(BufferedImage bufferedImg, JPanel panelForBoard, JLabel labelForTotalMoves, JLabel labelForIncorrectPieces,JLabel labelForElapsedTime, int elapsedTime)
+    Board(BufferedImage bufferedImg, JPanel panelForBoard, JLabel labelForTotalMoves, JLabel labelForIncorrectPieces,JLabel labelForElapsedTime,Time stopWatch)
     {
         this.panelForBoard = panelForBoard;
         this.bufferedImg = bufferedImg;
         this.labelForTotalMoves = labelForTotalMoves;
         this.labelForIncorrectPieces = labelForIncorrectPieces;
         this.labelForElapsedTime = labelForElapsedTime;
-        this.elapsedTime = elapsedTime;
+        this.stopWatch = stopWatch;
+     //   this.elapsedTime = elapsedTime;
         populateBoard();
 
-        for(int i = 0; i < 2 ; i++)
+        for(int i = 0; i < 5 ; i++)
         {
             shuffle();
         }
-
+        someOtherCheck = true;
     }
 
 
@@ -122,8 +126,9 @@ public class Board
            shuffle();
         }
 
-        youWin = false;
-        numberToDisplayMoves = -1;                //so the shuffling isnt counted as moves for the player
+      //  youWin = false;
+      someOtherCheck = false;
+       MyFrame.numberOfMovesToDisplay = -1;                //so the shuffling isnt counted as moves for the player
     }
 
     boolean checkForWin()
@@ -153,12 +158,11 @@ public class Board
                if(((buttonArray[i][j].rowForImage == buttonArray[i][j].rowforButton) && (buttonArray[i][j].colForImage == buttonArray[i][j].colForButton)))
                {
                 imagesWrongPos--;   //the image is in the right spot , so its 1 less image in the wrong spot
-  //              System.out.println("Images wrong Pos subtracted: " + imagesWrongPos + "  "); 
+
                }
                else
                {
                 imagesWrongPos++;  //the image was in the wrong spot so its 1 more in the wrong spot
-  //              System.out.println("Images wrong Pos added: " + imagesWrongPos + "  ");
                }
             }
         }
@@ -170,7 +174,7 @@ public class Board
         buttonArray[smart.rowforButton][smart.colForButton].setIcon(buttonArray[holeRow][holeColumn].icon);
         buttonArray[holeRow][holeColumn].setIcon(temp);
 
-        //=======================STUDY THIS
+        //=======================swap
         int tmp;
         tmp = smart.rowForImage;
         smart.rowForImage = buttonArray[holeRow][holeColumn].rowForImage; 
@@ -179,7 +183,7 @@ public class Board
         tmp = smart.colForImage;
         smart.colForImage = buttonArray[holeRow][holeColumn].colForImage; 
         buttonArray[holeRow][holeColumn].colForImage = tmp;
-        //========================STUDY THIS
+        //========================swap
 
 
         holeRow = smart.rowforButton;                                 //Hole row is where the button that was clicked on
@@ -194,6 +198,7 @@ public class Board
     {
         smart = (SmartButton)e.getSource();
         System.out.println("Smart row: " + smart.rowforButton + " Smart Col: " + smart.colForButton +" Hole Row: " + holeRow +  "  hole Col: " + holeColumn +"   ");
+        MyFrame.numberOfMovesToDisplay++;
 
         //=====================================if the button clicked is adjacent to the whole swap the images =======================================================================
         if((smart.rowforButton == holeRow && smart.colForButton == (holeColumn -1)) || (smart.colForButton == holeColumn && smart.rowforButton == (holeRow -1)) || smart.rowforButton == holeRow && smart.colForButton == (holeColumn + 1) 
@@ -204,32 +209,29 @@ public class Board
             youWin = checkForWin();
             System.out.println("Images wrong pos: " + (imagesWrongPos / 2));
             labelForIncorrectPieces.setText("Incorrect Pieces: " + (imagesWrongPos/2));
-            if(youWin == true)
+            if(youWin == true && someOtherCheck == true)
             {
+                MyFrame.numberOfMovesToDisplay++;
+                stopWatch.pause();
                 int response;
                 response = JOptionPane.showConfirmDialog(null, "Play Again?", " YOU WON! ", JOptionPane.YES_NO_OPTION);
                 if(JOptionPane.NO_OPTION == response)
                 {
                 System.out.println("Do nothing");
+                stopWatch.pause();
                 
                 }
                 else
                 {
+                    stopWatch.restart();
                     for(int i = 0; i < 3; i++)
                     {
-
                         shuffle();
-
- //                       labelForElapsedTime.setText("Elapsed Time: " + elapsedTime);
-
-                        elapsedTime = 0;
-                        stopWatch = new Time(elapsedTime,labelForElapsedTime);
-                        stopWatch.handleTime();
-                        stopWatch.start();
                     }
+                    someOtherCheck = true;
                 }
             }
-            numberToDisplayMoves++;
+            MyFrame.numberOfMovesToDisplay++;
             
         }
         else
@@ -237,7 +239,7 @@ public class Board
             System.out.println("Do not perform swap!!!! \n");
         }
 
-        labelForTotalMoves.setText("Number of moves: " + numberToDisplayMoves);  //everytime the user clicks an image it increments the moves by 1.
+        labelForTotalMoves.setText("Number of moves: " + MyFrame.numberOfMovesToDisplay);  //everytime the user clicks an image it increments the moves by 1.
 
 
     }

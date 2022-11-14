@@ -1,58 +1,52 @@
-
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.JLabel;
 
-public class Time extends Timer
+public class Time
 {
+    Timer timer;
     TimerTask task;
     int timePassed =0;
     int elapsedTime =0;
-    boolean isPaused = false;
     JLabel labelForElapsedTime;
 
-    Time(int elapsedTime,JLabel labelForElapsedTime)
+
+    Time(JLabel labelForElapsedTime)
     {
-        this.elapsedTime = elapsedTime;
         this.labelForElapsedTime = labelForElapsedTime;
     }
 
     void handleTime()
     {
-        new Timer(false);
+        timer = new Timer(false);
+        elapsedTime = timePassed;
         task = new TimerTask() 
         {
             public void run()
             {
-                isPaused =false;
                 elapsedTime++;
                 labelForElapsedTime.setText("Elapsed Time: " + elapsedTime);
             }
         };
-
     }
 
-    public void start()
+    void start()
     {
-        scheduleAtFixedRate(task, 1000, 1000);
+        timer.scheduleAtFixedRate(task, 1000, 1000);
     }
-    public void pause()
+    void pause()
     {
-        isPaused = true;
         timePassed = elapsedTime;
-        cancel();
-
+        timer.cancel();
     }
-    public void resume() 
+    void cancel()
     {
-        new Timer();
-        scheduleAtFixedRate( task, 1000, 1000 );
+        timer.cancel();
+    }
 
+    void restart()
+    {
         
     }
-    
-    void stopTimer()
-    {
-        cancel();
-    }
+
 }

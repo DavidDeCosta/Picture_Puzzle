@@ -1,11 +1,8 @@
 import java.awt.*;
 import javax.imageio.*;  //for imageIO
-import javax.lang.model.util.ElementScanner14;
 import javax.swing.*; 
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class MyFrame extends JFrame
                         implements ActionListener
@@ -45,6 +42,9 @@ boolean isPaused = false;
 Time stopWatch;
 
 
+JPanel testingPurposes;
+
+public static int numberOfMovesToDisplay = 0;
 public static final int ROW = 5;
 
 
@@ -52,8 +52,8 @@ public static final int ROW = 5;
     MyFrame()
     {
         theFileChooser = new JFileChooser(".");
-        
         addComponents();
+        stopWatch = new Time(labelForElapsedTime);
         buildMainFrame();
     }
 
@@ -74,24 +74,21 @@ public static final int ROW = 5;
         playAndPause = new JButton("Play");
         playAndPause.addActionListener(this);
 
-        labelForTotalMoves = new JLabel("Number of moves: " + numberOfMoves);
+        labelForTotalMoves = new JLabel("Number of moves: " + numberOfMovesToDisplay);
 
-        labelForElapsedTime = new JLabel("Elapsed Time: " );
+        labelForElapsedTime = new JLabel("Elapsed Time: " +elapsedTime );
 
         labelForIncorrectPieces = new JLabel("Incorrect Pieces: " + incorrectPieces);
-
-
-
-
 
         panelForGrid = new MyPanels();
         
         panelForGrid.setLayout(new GridLayout(ROW,ROW));
 
+  //      testingPurposes = new JPanel();
+  //      testingPurposes.add(panelForGrid);
+   //     add(testingPurposes,BorderLayout.CENTER);
 
         add(panelForGrid,BorderLayout.CENTER);
-
-
 
         southPanel.add(labelForElapsedTime);
         southPanel.add(labelForIncorrectPieces);
@@ -164,14 +161,13 @@ public static final int ROW = 5;
     {
         if(e.getActionCommand().equals("Exit"))
         {
-        //    this.dispose();
             System.exit(0);
         }
         else if(e.getActionCommand().equals("New_Image"))
         {
             handleNewImage();
             panelForOrigImg = new MyPanels(bufferedImg);
-            board = new Board(bufferedImg,panelForGrid,labelForTotalMoves,labelForIncorrectPieces,labelForElapsedTime,elapsedTime);
+            board = new Board(bufferedImg,panelForGrid,labelForTotalMoves,labelForIncorrectPieces,labelForElapsedTime,stopWatch);
             add(panelForOrigImg,BorderLayout.CENTER);
             panelForOrigImg.setVisible(true);
             panelForGrid.setVisible(false);
@@ -182,7 +178,6 @@ public static final int ROW = 5;
             panelForOrigImg.setVisible(false);
             playAndPause.setText(("Pause"));
             
-            stopWatch = new Time(elapsedTime,labelForElapsedTime);
             stopWatch.handleTime();
             stopWatch.start();
 
@@ -194,7 +189,6 @@ public static final int ROW = 5;
             panelForOrigImg.setVisible(true);
             panelForGrid.setVisible(false);
             playAndPause.setText("Play");
-
 
             stopWatch.pause();
         }
