@@ -205,7 +205,7 @@ public static final int ROW = 5;
         {
             handleNewImage();
             panelForOrigImg = new MyPanels(bufferedImg);
-            board = new Board(bufferedImg,panelForGrid,labelForTotalMoves);
+            board = new Board(bufferedImg,panelForGrid,labelForTotalMoves,labelForIncorrectPieces,labelForElapsedTime,elapsedTime);
             add(panelForOrigImg,BorderLayout.CENTER);
             panelForOrigImg.setVisible(true);
             panelForGrid.setVisible(false);
