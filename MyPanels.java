@@ -33,6 +33,10 @@ public class MyPanels extends JPanel
 
     g2.drawImage(originalImage,0,0,null);
         
-
+    
     }
+
+
+   
+    
 }

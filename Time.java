@@ -46,7 +46,10 @@ public class Time
 
     void restart()
     {
-        
+        timePassed = 0;
+        elapsedTime = 0;
+        handleTime();
+        start();
     }
 
 }

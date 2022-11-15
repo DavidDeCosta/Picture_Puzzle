@@ -44,8 +44,8 @@ Time stopWatch;
 
 JPanel testingPurposes;
 
-public static int numberOfMovesToDisplay = 0;
-public static final int ROW = 5;
+//public static int numberOfMovesToDisplay = 0;
+public static final int ROW = 10;
 
 
 //==============================================CONSTRUCTOR================================================================================    
@@ -74,7 +74,7 @@ public static final int ROW = 5;
         playAndPause = new JButton("Play");
         playAndPause.addActionListener(this);
 
-        labelForTotalMoves = new JLabel("Number of moves: " + numberOfMovesToDisplay);
+        labelForTotalMoves = new JLabel("Number of moves: " + numberOfMoves);
 
         labelForElapsedTime = new JLabel("Elapsed Time: " +elapsedTime );
 
@@ -84,9 +84,9 @@ public static final int ROW = 5;
         
         panelForGrid.setLayout(new GridLayout(ROW,ROW));
 
-  //      testingPurposes = new JPanel();
-  //      testingPurposes.add(panelForGrid);
-   //     add(testingPurposes,BorderLayout.CENTER);
+      //  testingPurposes = new JPanel();
+       // testingPurposes.add(panelForGrid);
+      //  add(testingPurposes,BorderLayout.CENTER);
 
         add(panelForGrid,BorderLayout.CENTER);
 
@@ -155,6 +155,11 @@ public static final int ROW = 5;
 
     }
 
+    void resetNumberOfMoves()
+    {
+        numberOfMoves = 0;
+    }
+
 //=============================================IMPLEMENTED METHODS==================================================================================
     @Override
     public void actionPerformed(ActionEvent e) 
@@ -167,13 +172,14 @@ public static final int ROW = 5;
         {
             handleNewImage();
             panelForOrigImg = new MyPanels(bufferedImg);
-            board = new Board(bufferedImg,panelForGrid,labelForTotalMoves,labelForIncorrectPieces,labelForElapsedTime,stopWatch);
+            board = new Board(bufferedImg,panelForGrid,labelForTotalMoves,labelForIncorrectPieces,labelForElapsedTime,stopWatch,numberOfMoves);
             add(panelForOrigImg,BorderLayout.CENTER);
             panelForOrigImg.setVisible(true);
             panelForGrid.setVisible(false);
         }
         else if(e.getActionCommand().equals("Play"))
         {
+            resetNumberOfMoves();
             panelForGrid.setVisible(true);
             panelForOrigImg.setVisible(false);
             playAndPause.setText(("Pause"));
